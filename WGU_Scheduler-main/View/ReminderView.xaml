@@ -1,0 +1,29 @@
+<UserControl
+    x:Class="Scheduler.View.ReminderView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Scheduler"
+    xmlns:ViewModel="clr-namespace:Scheduler.ViewModel" 
+    d:DataContext="{d:DesignInstance Type=ViewModel:ReminderViewModel}"
+    mc:Ignorable="d"
+    d:DesignWidth="1000"
+    d:DesignHeight="550">
+
+    <Grid Background="WhiteSmoke">
+        <StackPanel Margin="0,0,0,-20">
+            <TextBlock Text="Appointment Reminder" FontSize="30" FontWeight="Bold" Margin="20,20,20,20" HorizontalAlignment="Center"/>
+            <Border Margin="25" Background="White" VerticalAlignment="Center" CornerRadius="10">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="30" Color="LightGray" ShadowDepth="0"/>
+                </Border.Effect>
+                <TextBlock Text="{Binding ReminderText}" TextWrapping="Wrap" Margin="50" HorizontalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Please click on a Navigation button above to continue"
+                       Margin="10" FontSize="13" FontStyle="Italic" Foreground="LightSalmon" HorizontalAlignment="Center"/>
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

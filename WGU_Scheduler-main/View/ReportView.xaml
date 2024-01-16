@@ -1,0 +1,113 @@
+<UserControl
+    x:Class="Scheduler.View.ReportView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:Scheduler"
+    xmlns:ViewModel="clr-namespace:Scheduler.ViewModel"
+    d:DataContext="{d:DesignInstance Type=ViewModel:ReportViewModel}"
+    mc:Ignorable="d"
+    d:DesignWidth="1000" Height="550">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="AliceBlue" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Height" Value="20" />
+        </Style>
+        <CollectionViewSource x:Key="ConsultantViewSource" Source="{Binding ConsultantReport}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Consultant" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+        <CollectionViewSource x:Key="MonthlyViewSource" Source="{Binding MonthlyReport}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Month" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    
+    <Grid Background="WhiteSmoke">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="15"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="1" Grid.ColumnSpan="7" Grid.Row="2">
+            <TextBlock Text="Reports" FontSize="30" FontWeight="Bold" Margin="5"/>
+        </StackPanel>
+
+        <TabControl Grid.Column="1" Grid.ColumnSpan="8" Grid.Row="3" Grid.RowSpan="3" HorizontalAlignment="Left" TabStripPlacement="Left"
+                    SelectedItem="{Binding Path=TabControlSelectedItem, UpdateSourceTrigger=PropertyChanged, Mode=Twoway}">
+            <TabItem Header="Appt Types by Month" FontSize="20" IsSelected="{Binding MonthlyReportSelected}">
+                <StackPanel>
+                    <TextBlock Text="Appointment Types per Month, (+/-1 Month)" />
+                    <ListView Name="MonthlyListView" ItemsSource="{Binding Source={StaticResource MonthlyViewSource}}" FontSize="12">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Appointment Type" DisplayMemberBinding="{Binding AppointmentType}"/>
+                                <GridViewColumn Header="Count" DisplayMemberBinding="{Binding AppointmentTypeCount}" />
+                            </GridView>
+                        </ListView.View>
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontWeight="Bold" FontSize="20" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                    </ListView>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Per Consultant Schedule" FontSize="20" 
+                     IsSelected="{Binding ConsultantReportSelected}">
+                <StackPanel>
+                    <TextBlock Text="Per Consultant Schedule" />
+                    <ListView Name="ConsultantListView" ItemsSource="{Binding Source={StaticResource ConsultantViewSource}}" FontSize="12">
+                    <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Consultant" DisplayMemberBinding="{Binding Consultant}"/>
+                                <GridViewColumn Header="Time" DisplayMemberBinding="{Binding Appointment}" />
+                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding AppointmentType}" />
+                                <GridViewColumn Header="Customer" DisplayMemberBinding="{Binding CustomerName}"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontWeight="Bold" FontSize="20" Text="{Binding Name}"/>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                    </ListView>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Lunch Fraud Audit" FontSize="20" IsSelected="{Binding FraudReportSelected}">
+                <StackPanel>
+                    <TextBlock Text="{Binding FraudReport}" FontSize="12" Margin="25" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</UserControl>

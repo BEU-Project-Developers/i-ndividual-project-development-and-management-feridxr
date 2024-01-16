@@ -1,0 +1,346 @@
+<UserControl
+    x:Class="Scheduler.View.AppointmentView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:Scheduler"
+    xmlns:ViewModel="clr-namespace:Scheduler.ViewModel"
+    xmlns:Validation="clr-namespace:Scheduler.Validation"
+    d:DataContext="{d:DesignInstance Type=ViewModel:AppointmentViewModel}"
+    mc:Ignorable="d"
+    d:DesignWidth="1000" Height="550">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:CallMethodAction TargetObject="{Binding}" MethodName="LoadAppointments"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="AliceBlue" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="1"/>
+            <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                            Path=(Validation.Errors)/ErrorContent}"/>
+                        <Setter Property="Background" Value="Salmon"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="20" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Height" Value="20" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Background="WhiteSmoke">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="15"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" HorizontalAlignment="Center">
+            <TextBlock Text="Appointments" FontSize="30" FontWeight="Bold" Margin="5" MinHeight="40"/>
+        </StackPanel>
+
+        <TabControl Grid.Column="1" Grid.ColumnSpan="8" Grid.Row="2" Grid.RowSpan="8" HorizontalAlignment="Left" 
+                    TabStripPlacement="Left" SelectedItem="{Binding Path=TabControlSelectedItem,UpdateSourceTrigger=PropertyChanged,Mode=Twoway}">
+            <TabItem Header="Weekly Calendar" FontSize="20" IsSelected="{Binding WeeklyCalendarSelected}">
+                <WrapPanel Grid.Column="2" Grid.ColumnSpan="8" Grid.Row="3">
+                    <StackPanel >
+                        <DataGrid Name="WeeklyAppointmentsDataGrid"
+                            Grid.Column="2"
+                            Grid.ColumnSpan="8"
+                            Grid.Row="3" 
+                            Height="Auto"
+                            FontSize="12"
+                            Background="AliceBlue"
+                            Margin="5"
+                            AlternatingRowBackground="LightBlue"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding WeeklyAppointments}"
+                            CurrentItem="{Binding SelectedAppointment, Mode=TwoWay}"
+                            AutoGenerateColumns="False"
+                            IsEnabled="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Customer Id" Binding="{Binding Path=CustomerId, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Appt Type" Binding="{Binding Path=Type, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Location" Binding="{Binding Path=Location, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Path=Description, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Start Date" Binding="{Binding Path=Start, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="End Date" Binding="{Binding Path=End, Mode=TwoWay}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Name="addButton_weekly" Content="Add" Command="{Binding AddAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                            <Button Name="editButton_weekly" Content="Edit" Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                            <Button Name="deleteButton_weekly" Content="Delete" Command="{Binding DeleteAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="Monthly Calender" FontSize="20" IsSelected="{Binding MonthlyCalendarSelected}">
+                <WrapPanel Grid.Column="2" Grid.ColumnSpan="8" Grid.Row="3">
+                    <StackPanel >
+                        <DataGrid Name="MonhtlyAppointmentsDataGrid"
+                            Grid.Column="2"
+                            Grid.ColumnSpan="8"
+                            Grid.Row="3" 
+                            Height="Auto"
+                            FontSize="12"
+                            Background="AliceBlue"
+                            Margin="5"
+                            AlternatingRowBackground="LightBlue"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding MonthlyAppointments}"
+                            CurrentItem="{Binding SelectedAppointment, Mode=TwoWay}"
+                            AutoGenerateColumns="False"
+                            IsEnabled="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Customer Id" Binding="{Binding Path=CustomerId, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Appt Type" Binding="{Binding Path=Type, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Location" Binding="{Binding Path=Location, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Path=Description, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Start Date" Binding="{Binding Path=Start, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="End Date" Binding="{Binding Path=End, Mode=TwoWay}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Name="addButton_monthly" Content="Add" Command="{Binding AddAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                            <Button Name="editButton_monthly" Content="Edit" Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                            <Button Name="deleteButton_monthly" Content="Delete" Command="{Binding DeleteAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="All Time" FontSize="20" IsSelected="{Binding GridSelected}">
+                <WrapPanel Grid.Column="2" Grid.ColumnSpan="8" Grid.Row="3">
+                    <StackPanel >
+                        <DataGrid Name="AllAppointmentsDataGrid"
+                            Grid.Column="2"
+                            Grid.ColumnSpan="8"
+                            Grid.Row="3" 
+                            Height="Auto"
+                            FontSize="12"
+                            Background="AliceBlue"
+                            Margin="5"
+                            AlternatingRowBackground="LightBlue"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding AllAppointmentsLoaded}"
+                            CurrentItem="{Binding SelectedAppointment, Mode=TwoWay}"
+                            AutoGenerateColumns="False"
+                            IsEnabled="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Customer Id" Binding="{Binding Path=CustomerId, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Appt Type" Binding="{Binding Path=Type, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Path=Title, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Location" Binding="{Binding Path=Location, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Path=Description, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="Start Date" Binding="{Binding Path=Start, Mode=TwoWay}"/>
+                                <DataGridTextColumn Header="End Date" Binding="{Binding Path=End, Mode=TwoWay}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Name="addButton_grid" Content="Add" Command="{Binding AddAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                            <Button Name="editButton_grid" Content="Edit" Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                            <Button Name="deleteButton_grid" Content="Delete" Command="{Binding DeleteAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem Header="Modify Appointments" FontSize="20" IsSelected="{Binding ModifyAppointmentSelected}">
+                <WrapPanel Grid.Column="2" Grid.ColumnSpan="8" Grid.Row="3">
+                    <StackPanel Grid.Column="2" Grid.Row="4">
+                        <TextBox Text="Title" IsEnabled="False"/>
+                        <TextBox Name="titleBox"
+                                 IsEnabled="{Binding EditMode, Mode=OneWay}"
+                                MinWidth="225" BorderBrush="DarkBlue">
+                            <TextBox.Text>
+                                <Binding Path="SelectedAppointment.Title" Mode="TwoWay"
+                                         UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" >
+                                    <Binding.ValidationRules>
+                                        <Validation:ValidateNotNullOrWhitespace/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+                        <TextBox Text="Name" IsEnabled="False"/>
+                        <ComboBox Name="customerBox" ItemsSource="{Binding Path=AllCustomers}"
+                              SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                              IsEnabled="{Binding EditMode, Mode=TwoWay}"
+                              DisplayMemberPath="CustomerName"
+                              IsSynchronizedWithCurrentItem="True">
+                            <ComboBox.Style>
+                                <Style TargetType="ComboBox">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EditMode}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ViewMode}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
+                        </ComboBox>
+                        <TextBlock Name="customerTextBox" Text="{Binding Path=SelectedCustomer.CustomerName,  Mode=TwoWay}"
+                            IsEnabled="{Binding EditMode, Mode=OneWay}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding EditMode}" Value="True">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ViewMode}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox Text="Type" IsEnabled="False"/>
+                        <TextBox Name="customerTypeBox" IsEnabled="{Binding EditMode, Mode=OneWay}" BorderBrush="DarkBlue">
+                            <TextBox.Text>
+                                <Binding Path="SelectedAppointment.Type" Mode="TwoWay"
+                                         UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" >
+                                    <Binding.ValidationRules>
+                                        <Validation:ValidateNotNullOrWhitespace/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Text="Location" IsEnabled="False"/>
+                        <TextBox Name="locationBox" IsEnabled="{Binding EditMode, Mode=OneWay}" BorderBrush="DarkBlue">
+                            <TextBox.Text>
+                                <Binding Path="SelectedAppointment.Location" Mode="TwoWay"
+                                         UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" >
+                                    <Binding.ValidationRules>
+                                        <Validation:ValidateNotNullOrWhitespace/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Text="Description" IsEnabled="False"/>
+                        <TextBox Name="descriptionBox" Text="{Binding SelectedAppointment.Description, Mode=TwoWay}" IsEnabled="{Binding EditMode, Mode=OneWay}" BorderBrush="DarkBlue"/>
+                        <TextBox Text="Start" IsEnabled="False"/>
+                        <TextBox Name="startDate" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                            <TextBox.Text>
+                                <Binding Path="SelectedAppointment.Start" Mode="TwoWay"
+                                         UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" >
+                                    <Binding.ValidationRules>
+                                        <Validation:ValidateNotNullOrWhitespace/>
+                                        <Validation:ValidateAppointmentWithinBusinessHours/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Text="End" IsEnabled="False"/>
+                        <TextBox Name="endDate" IsEnabled="{Binding EditMode, Mode=OneWay}">
+                            <TextBox.Text>
+                                <Binding Path="SelectedAppointment.End" Mode="TwoWay"
+                                         UpdateSourceTrigger="PropertyChanged" NotifyOnValidationError="True" >
+                                    <Binding.ValidationRules>
+                                        <Validation:ValidateNotNullOrWhitespace/>
+                                        <Validation:ValidateAppointmentWithinBusinessHours/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+
+
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.Row="5">
+                            <Button Name="saveButton" Content="Save" Command="{Binding SaveAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                                Width="40" Height="25" Margin="10">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource  {x:Type Button}}">
+                                        <Setter Property="IsEnabled" Value="false" />
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding ElementName=titleBox, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=customerBox, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=customerTextBox, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=customerTypeBox, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=locationBox, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=descriptionBox, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=startDate, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding ElementName=endDate, Path=(Validation.HasError)}" Value="false" />
+                                                    <Condition Binding="{Binding Path=EditMode}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="IsEnabled" Value="true" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Name="cancelButton" Content="Cancel" Command="{Binding CancelAppointmentCommand}"
+                                Width="40" Height="25" Margin="10" IsEnabled="{Binding EditMode, Mode=OneWay}"/>
+                        </StackPanel>
+
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="11" HorizontalAlignment="Right" VerticalAlignment="Bottom" >
+                        <TextBlock Margin="20,20,20,20" Visibility="Hidden"/>
+                        <Button Name="addButton_appt" Content="Add" Command="{Binding AddAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                        <Button Name="editButton_appt" Content="Edit" Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                        <Button Name="deleteButton_appt" Content="Delete" Command="{Binding DeleteAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}"
+                            Height="30" Width="50" Margin="5" IsEnabled="{Binding ViewMode, Mode=OneWay}"/>
+                    </StackPanel>
+
+                </WrapPanel>
+            </TabItem>
+        </TabControl>
+       
+
+    </Grid>
+</UserControl>
